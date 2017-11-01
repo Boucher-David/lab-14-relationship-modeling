@@ -1,10 +1,16 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const Film = require('./films.js');
 
-const wizardSchema = new mongoose.Schema({
-    name: {type: String, required: true},
-    film: [{ type: Schema.Types.ObjectId, ref: 'Film' }]
+const Schema = mongoose.Schema;
+const wizardSchema = new Schema({
+    name: {type: String},
+    films: {
+        type: Schema.Types.ObjectId,
+        ref: 'Film'   
+    }
 });
+
 
 const Wizard = module.exports = mongoose.model('Wizard', wizardSchema);
