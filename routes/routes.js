@@ -41,7 +41,6 @@ Router.delete('/wizards/:id', (req, res, next) => {
 });
 
 Router.get('/films', (req, res) => {
-    console.log(req.query);
     Film.find(req.query || {})
     .then(film => res.send(film))
     .catch(err => next({error: err}));
@@ -79,7 +78,19 @@ Router.patch('/films/:id', jsonParser, (req, res, next) => {
     .catch(err => next({error: err})); 
 });
 
-Router.get('/films/:film', (req, res, next) => {
-    const newWizard = new Wizard({name: 'Grey'});
-    Film.findOne({_id: req.params.id}).populate('wizard', newWizard).exec(wizard => res.send(wizard));
+Router.get('/populate/:wizard/:', (req, res) => {
+
+
+    newWizard = new Wizard({name: 'Gandalf'});
+    newWizard.save(function(err) {
+        const newFilm = new Film({title: 'LOTR', Wizard: newWizard._id});
+        newFilm.save(function(err) {
+            Film.findOne({title: 'LOTR'}).populate('Wizard').exec((err, reply) => {
+  
+                res.send(err || reply);
+            });
+        });
+    });
+
 });
+
