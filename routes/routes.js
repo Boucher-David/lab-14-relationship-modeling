@@ -8,7 +8,7 @@ const Router = module.exports = express.Router();
 
 Router.post('/wizards', jsonParser ,(req, res, next) => {
     const newWizard = new Wizard(req.body);
-    newWizard.save().then(message => sendMessage(res, 200, 'Wizard saved to database.'))
+    newWizard.save().then(message => res.send(message))
     .catch(err => next({error: err}));
 });
 
@@ -78,18 +78,17 @@ Router.patch('/films/:id', jsonParser, (req, res, next) => {
     .catch(err => next({error: err})); 
 });
 
-Router.get('/populate/:wizard/:', (req, res) => {
+Router.get('/associate/:film/:wizard', (req, res) => {
+    const newWizard = new Wizard({title: req.params.wizard});
+    newWizard.save().then(message => {
+        const newFilm = new Film({title: req.params.film, Wizard: newWizard._id});
+        newFilm.save().then(message => res.send(message));
+});})
 
+Router.get('/populate/:id', (req, res) => {
 
-    newWizard = new Wizard({name: 'Gandalf'});
-    newWizard.save(function(err) {
-        const newFilm = new Film({title: 'LOTR', Wizard: newWizard._id});
-        newFilm.save(function(err) {
-            Film.findOne({title: 'LOTR'}).populate('Wizard').exec((err, reply) => {
-  
-                res.send(err || reply);
-            });
-        });
+    Film.findOne({_id: req.params.id}).populate('Wizard').exec((err, reply) => {
+        res.send(err || reply);
     });
 
 });

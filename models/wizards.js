@@ -6,7 +6,6 @@ const Film = require('./films.js');
 const Schema = mongoose.Schema;
 const wizardSchema = new Schema({
     name: String,
-    Film: [{ type: Schema.Types.ObjectId, ref: 'Wizard' }]
 });
 
 
